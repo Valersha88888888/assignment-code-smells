@@ -1,22 +1,18 @@
 /*
-  1. Se om du kan hitta två stycken code smells i följande funktion och rätta till dem.
-  Funktionen tar emot en lista med längshoppslängder och syftet med funktionen är att summera
-  dessa hopplängder.
-  */
+1. Improved function for summing jump lengths.
+Code smells fixed:
+- Unnecessary variable
+- Unclear naming
+*/
 
-function getLength(jumpings: number[]): number {
-  let totalNumber = 0;
-
-  totalNumber = jumpings.reduce(
-    (jumpDistanceSoFar, currentJump) => jumpDistanceSoFar + currentJump
-  );
-
-  return totalNumber;
+function getTotalJumpLength(jumps: number[]): number {
+  return jumps.reduce((total, jump) => total + jump, 0);
 }
 
 /*
-  2. I detta exempel har vi fokuserat på if-statements. Se om du kan göra exemplet bättre!
-  */
+2. Simplified student status logic.
+Removed nested ternary and unnecessary mutation of object state.
+*/
 
 class Student {
   constructor(
@@ -27,47 +23,44 @@ class Student {
 }
 
 function getStudentStatus(student: Student): string {
-  student.passed =
-    student.name == "Sebastian"
-      ? student.handedInOnTime
-        ? true
-        : false
-      : false;
-
-  if (student.passed) {
-    return "VG";
-  } else {
-    return "IG";
-  }
+  const passed = student.name === "Sebastian" && student.handedInOnTime;
+  return passed ? "VG" : "IG";
 }
 
 /*
-  3. Variabelnamn är viktiga. Kika igenom följande kod och gör om och rätt.
-  Det finns flera code smells att identifiera här. Vissa är lurigare än andra.
-  */
+3. Improved variable names and structure.
+Removed magic numbers and unclear variable naming.
+*/
 
-class Temp {
-  constructor(public q: string, public where: Date, public v: number) {}
+class Temperature {
+  constructor(
+    public city: string,
+    public date: Date,
+    public value: number
+  ) {}
 }
 
-function averageWeeklyTemperature(heights: Temp[]) {
-  let r = 0;
+function averageWeeklyTemperature(records: Temperature[]): number {
+  const ONE_WEEK = 604800000;
 
-  for (let who = 0; who < heights.length; who++) {
-    if (heights[who].q === "Stockholm") {
-      if (heights[who].where.getTime() > Date.now() - 604800000) {
-        r += heights[who].v;
-      }
+  let totalTemperature = 0;
+
+  for (const record of records) {
+    if (
+      record.city === "Stockholm" &&
+      record.date.getTime() > Date.now() - ONE_WEEK
+    ) {
+      totalTemperature += record.value;
     }
   }
 
-  return r / 7;
+  return totalTemperature / 7;
 }
 
 /*
-  4. Följande funktion kommer att presentera ett objekt i dom:en. 
-  Se om du kan göra det bättre. Inte bara presentationen räknas, även strukturer.
-  */
+4. Improved DOM structure and readability.
+Separated DOM creation logic.
+*/
 
 function showProduct(
   name: string,
@@ -77,88 +70,87 @@ function showProduct(
   image: string,
   parent: HTMLElement
 ) {
-  let container = document.createElement("div");
-  let title = document.createElement("h4");
-  let pris = document.createElement("strong");
-  let imageTag = document.createElement("img");
+  const container = document.createElement("div");
 
-  title.innerHTML = name;
-  pris.innerHTML = price.toString();
+  const title = document.createElement("h4");
+  title.textContent = name;
+
+  const imageTag = document.createElement("img");
   imageTag.src = image;
+
+  const priceTag = document.createElement("strong");
+  priceTag.textContent = price.toString();
 
   container.appendChild(title);
   container.appendChild(imageTag);
-  container.appendChild(pris);
+  container.appendChild(priceTag);
+
   parent.appendChild(container);
 }
 
 /*
-  5. Följande funktion kommer presentera studenter. Men det finns ett antal saker som 
-  går att göra betydligt bättre. Gör om så många som du kan hitta!
-  */
+5. Removed duplicated code and improved structure.
+*/
+
+function createStudentElement(student: Student): HTMLElement {
+  const container = document.createElement("div");
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = student.handedInOnTime;
+
+  container.appendChild(checkbox);
+
+  return container;
+}
+
 function presentStudents(students: Student[]) {
+  const passedList = document.querySelector("ul#passedstudents");
+  const failedList = document.querySelector("ul#failedstudents");
+
   for (const student of students) {
+    const studentElement = createStudentElement(student);
+
     if (student.handedInOnTime) {
-      let container = document.createElement("div");
-      let checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = true;
-
-      container.appendChild(checkbox);
-      let listOfStudents = document.querySelector("ul#passedstudents");
-      listOfStudents?.appendChild(container);
+      passedList?.appendChild(studentElement);
     } else {
-      let container = document.createElement("div");
-      let checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = false;
-
-      container.appendChild(checkbox);
-      let listOfStudents = document.querySelector("ul#failedstudents");
-      listOfStudents?.appendChild(container);
+      failedList?.appendChild(studentElement);
     }
   }
 }
 
 /*
-  6. Skriv en funktion som skall slå ihop följande texter på ett bra sätt:
-  Lorem, ipsum, dolor, sit, amet
-  Exemplet under löser problemet, men inte speciellt bra. Hur kan man göra istället?
-  */
-function concatenateStrings() {
-  let result = "";
-  result += "Lorem";
-  result += "ipsum";
-  result += "dolor";
-  result += "sit";
-  result += "amet";
+6. Improved string concatenation using array join.
+*/
 
-  return result;
+function concatenateStrings(): string {
+  return ["Lorem", "ipsum", "dolor", "sit", "amet"].join(", ");
 }
 
-/* 
-7. Denna funktion skall kontrollera att en användare är över 20 år och göra någonting.
-    Det finns dock problem med denna typ av funktion. Vad händer när kraven ändras och
-    fler och fler parametrar behöver läggas till? T.ex. avatar eller adress. Hitta en bättre
-    lösning som är hållbar och skalar bättre. 
+/*
+7. Improved scalability using object instead of multiple parameters.
 */
-function createUser(
-  name: string,
-  birthday: Date,
-  email: string,
-  password: string
-) {
-  // Validation
 
-  let ageDiff = Date.now() - birthday.getTime();
-  let ageDate = new Date(ageDiff);
-  let userAge = Math.abs(ageDate.getUTCFullYear() - 1970);
+interface User {
+  name: string;
+  birthday: Date;
+  email: string;
+  password: string;
+}
 
-  console.log(userAge);
+function calculateAge(birthday: Date): number {
+  const ageDiff = Date.now() - birthday.getTime();
+  const ageDate = new Date(ageDiff);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
 
-  if (!(userAge < 20)) {
-    // Logik för att skapa en användare
-  } else {
+function createUser(user: User) {
+  const age = calculateAge(user.birthday);
+
+  if (age < 20) {
     return "Du är under 20 år";
   }
+
+  // Logic for creating a user
+  console.log("User created:", user.name);
 }
