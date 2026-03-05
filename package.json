@@ -8,9 +8,12 @@
   "author": "Sebastian Tegel",
   "license": "ISC",
   "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.2.4",
     "parcel": "^2.8.3"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.8.3"
+    "@parcel/transformer-sass": "^2.8.3",
+    "@types/express": "^5.0.6"
   }
 }
