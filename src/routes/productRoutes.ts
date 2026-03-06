@@ -3,6 +3,8 @@ import Product from "../models/Product";
 
 const router = express.Router();
 
+
+// CREATE PRODUCT
 router.post("/products", async (req: Request, res: Response) => {
   try {
     const { name, price, stock } = req.body;
@@ -43,10 +45,25 @@ router.post("/products", async (req: Request, res: Response) => {
     const savedProduct = await newProduct.save();
 
     res.status(201).json(savedProduct);
+
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({ error: "Failed to create product" });
   }
 });
+
+
+// GET ALL PRODUCTS
+router.get("/products", async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json(products);
+
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
+
 
 export default router;
