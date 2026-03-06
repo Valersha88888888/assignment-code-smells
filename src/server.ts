@@ -6,9 +6,14 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(req.method, req.url);
+  next();
+});
+
 app.use("/api", productRoutes);
 
-const PORT = 3000;
+const PORT = 4000;
 
 mongoose.connect(
     "mongodb+srv://adminlulu:admin88888888@cluster0.5cfekx8.mongodb.net/copilot-assignment"

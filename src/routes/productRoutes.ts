@@ -9,23 +9,19 @@ router.post("/products", async (req: Request, res: Response) => {
 
     if (!name || typeof name !== "string" || name.length < 3) {
       return res.status(400).json({
-        error: "name is required and must be at least 3 characters"
+        error: "name is required and must be at least 3 characters",
       });
     }
 
     if (typeof price !== "number" || price <= 0) {
       return res.status(400).json({
-        error: "price must be a positive number"
+        error: "price must be a positive number",
       });
     }
 
-    if (
-      typeof stock !== "number" ||
-      stock < 0 ||
-      !Number.isInteger(stock)
-    ) {
+    if (typeof stock !== "number" || stock < 0 || !Number.isInteger(stock)) {
       return res.status(400).json({
-        error: "stock must be a non-negative integer"
+        error: "stock must be a non-negative integer",
       });
     }
 
@@ -33,7 +29,7 @@ router.post("/products", async (req: Request, res: Response) => {
 
     if (existingProduct) {
       return res.status(400).json({
-        error: "Product with this name already exists"
+        error: "Product with this name already exists",
       });
     }
 
@@ -41,19 +37,15 @@ router.post("/products", async (req: Request, res: Response) => {
       name,
       price,
       stock,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
 
     const savedProduct = await newProduct.save();
 
     res.status(201).json(savedProduct);
-
   } catch (error) {
     console.error("Error creating product:", error);
-
-    res.status(500).json({
-      error: "Failed to create product"
-    });
+    res.status(500).json({ error: "Failed to create product" });
   }
 });
 
