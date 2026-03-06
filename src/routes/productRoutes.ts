@@ -52,12 +52,30 @@ router.post("/products", async (req: Request, res: Response) => {
   }
 });
 
-
-// GET ALL PRODUCTS
+// Copilot prompt:
+// Create an Express.js endpoint that returns products from MongoDB
+// with pagination (limit, skip) and sorting using query parameters.
+// The response should include total number of products and the data array.
 router.get("/products", async (req: Request, res: Response) => {
   try {
-    const products = await Product.find();
-    res.status(200).json(products);
+
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = parseInt(req.query.skip as string) || 0;
+    const sort = (req.query.sort as string) || "createdAt";
+
+    const total = await Product.countDocuments();
+
+    const products = await Product.find()
+      .sort({ [sort]: 1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      total,
+      limit,
+      skip,
+      data: products
+    });
 
   } catch (error) {
     console.error("Error fetching products:", error);
