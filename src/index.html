@@ -1,13 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
 
-    <script src="ts/main.ts" defer type="module"></script>
-    <link rel="stylesheet" href="scss/main.scss" />
-  </head>
-  <body></body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products</title>
+</head>
+
+<body>
+
+<h1>Products</h1>
+
+<button onclick="loadProducts()">Load products</button>
+
+<ul id="products"></ul>
+
+<script>
+
+async function loadProducts() {
+
+  try {
+
+    const res = await fetch("http://localhost:4000/api/products");
+    const data = await res.json();
+
+    const list = document.getElementById("products");
+    list.innerHTML = "";
+
+    data.data.forEach(product => {
+
+      const li = document.createElement("li");
+      li.textContent = product.name + " - $" + product.price;
+
+      list.appendChild(li);
+
+    });
+
+  } catch (error) {
+
+    console.error("Error loading products:", error);
+
+  }
+
+}
+
+</script>
+
+</body>
 </html>
